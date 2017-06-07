@@ -12,12 +12,31 @@ import nodes from '../data/nodes4.json'
 //   </div>
 // )
 
-
+var fpsText;
 
 class Chart extends Component{
   el: HTMLElement
   two: any
 
+  drawFps(){
+    fpsText = this.two.makeText("lalala", 100, 10);
+
+    var lastRun = new Date().getTime();
+    var drawDelayTimer = 0;
+    this.two.bind('update', (frameCount) => {
+
+      var delta = (new Date().getTime() - lastRun)/1000;
+      lastRun = new Date().getTime();
+      var fps = 1/delta;
+
+      drawDelayTimer -= delta;
+      if(drawDelayTimer < 0){
+        drawDelayTimer = 1;
+        fpsText.value = parseInt(fps).toString();
+      }
+    }).play();
+
+  }
   onRef = (el:HTMLElement) => {
     this.el = el
     const two = new Two({
@@ -53,7 +72,7 @@ class Chart extends Component{
       g3.scale = 2
     }
 
-
+    this.drawFps();
 
     const clusters = clusterPkgsFromNodes(nodes)
 
@@ -83,6 +102,7 @@ class Chart extends Component{
     //two.scale = 4
     two.appendTo(el)
   }
+
 
   render(){
     return (<div>
