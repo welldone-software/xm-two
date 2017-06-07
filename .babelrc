@@ -1,0 +1,22 @@
+{
+  "presets": [
+    [
+      {
+        "env": {
+          "targets": {
+            "chrome": 52
+          },
+          "modules": false,
+          "debug": true
+        }
+      }
+    ],
+    "stage-0",
+    "react",
+    "flow"
+  ],
+  "plugins": [
+    "transform-class-properties",
+    "react-hot-loader/babel"
+  ]
+}
