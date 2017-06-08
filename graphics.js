@@ -1,4 +1,158 @@
-var gl;
+// 1. Create a Pixi renderer and define size and a background color
+var renderer = PIXI.autoDetectRenderer(600, 450, {backgroundColor : 0x1099bb});
+
+// 2. Append canvas element to the body
+document.body.appendChild(renderer.view);
+
+// 3. Create a container that will hold your scene
+var stage = new PIXI.Container();
+
+start();
+
+
+function addLine(){
+  var line = new PIXI.Graphics();
+
+// Define line style (think stroke)
+// width, color, alpha
+  line.lineStyle(10, 0xD5402B, 1);
+
+// Define line position - this aligns the top left corner of our canvas
+  line.position.x = renderer.width / 2;
+  line.position.y = renderer.height / 2;
+
+// Define pivot to the center of the element (think transformOrigin)
+  line.pivot.set(0,140);
+  line.rotation = 0.785398; // in radiants - use google to convert degrees to radiants
+
+// Draw line
+  line.moveTo(5,0);
+  line.lineTo(5, 280);
+
+  stage.addChild(line);
+}
+
+function addComputer(x, y, width, height){
+  var container = new PIXI.Container();
+  stage.addChild(container);
+
+  var graphics = new PIXI.Graphics();
+
+// set a fill and line style
+  graphics.beginFill(0xFF3300);
+  graphics.lineStyle(4, 0xffd900, 1);
+
+// draw a rounded rectangle
+  graphics.lineStyle(2, 0xFF00FF, 1);
+  graphics.beginFill(0xFFFFFF, 0.25);
+  graphics.drawRoundedRect(0, 0, width, height, 10);
+  graphics.endFill();
+
+  container.addChild(graphics);
+
+  var deviceSprite = new PIXI.Sprite(PIXI.loader.resources['device-big.png'].texture);
+  container.addChild(deviceSprite);
+
+  // center the sprite's anchor point
+  deviceSprite.anchor.set(0.5);
+  deviceSprite.x = width / 2;
+  deviceSprite.y = height * 0.2;
+  deviceSprite.scale.x = 0.5;
+  deviceSprite.scale.y = 0.5;
+
+  var dataSprite = new PIXI.Sprite(PIXI.loader.resources['data-big.png'].texture);
+  container.addChild(dataSprite);
+
+  // center the sprite's anchor point
+  dataSprite.anchor.set(0.5);
+  dataSprite.x = width / 2;
+  dataSprite.y = height * 0.5;
+  dataSprite.scale.x = 0.5;
+  dataSprite.scale.y = 0.5;
+
+  var netSprite = new PIXI.Sprite(PIXI.loader.resources['network-big.png'].texture);
+  container.addChild(netSprite);
+
+  // center the sprite's anchor point
+  netSprite.anchor.set(0.5);
+  netSprite.x = width / 2;
+  netSprite.y = height * 0.8;
+  netSprite.scale.x = 0.5;
+  netSprite.scale.y = 0.5;
+
+// Center on the screen
+  container.x = x;
+  container.y = y;
+
+  //container.scale.x = 0.5;
+  //container.scale.y = 0.5;
+}
+
+function start(){
+
+  PIXI.loader
+    .add('data-big.png')
+    .add('network-big.png')
+    .add('device-big.png')
+    .load(function(){
+      var width = 50;
+      var height = 100;
+      //addLine();
+      for(var i = 0; i < 20; i++){
+        for(var j = 0; j < 20; j++){
+          addComputer(i * width, j * height, width, height);
+        }
+      }
+
+      requestAnimationFrame(update);
+    });
+}
+
+var lastRun = new Date().getTime();
+var drawDelayTimer = 0;
+var fpsDiv;
+
+function drawFPS(){
+
+  var delta = (new Date().getTime() - lastRun)/1000;
+  lastRun = new Date().getTime();
+  var fps = 1/delta;
+
+  drawDelayTimer -= delta;
+  if(drawDelayTimer < 0) {
+    drawDelayTimer = 1;
+    //console.log("fps", fps);
+    if(!fpsDiv){
+      fpsDiv = document.getElementById("fps");
+    }
+
+    fpsDiv.innerText = "FPS:" + parseInt(fps);
+  }
+}
+
+function update(){
+  renderer.render(stage);
+  drawFPS();
+  requestAnimationFrame(update);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*var gl;
 var shaders = {
   "shader-fs":
   "precision mediump float;" +
@@ -40,18 +194,7 @@ function initGL(canvas) {
 }
 
 function getShader(gl, id) {
-  /*var shaderScript = document.getElementById(id);
-  if (!shaderScript) {
-    return null;
-  }*/
   var str = shaders[id];
-  /*var k = shaderScript.firstChild;
-  while (k) {
-    if (k.nodeType == 3) {
-      str += k.textContent;
-    }
-    k = k.nextSibling;
-  }*/
   var shader;
   if (id == "shader-fs") {
     shader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -150,10 +293,10 @@ function handleTextureLoaded(image, texture) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  /*gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);*/
+  //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
   gl.bindTexture(gl.TEXTURE_2D, null);
 }
@@ -232,4 +375,4 @@ function webGLStart() {
   }, true);
 
   renderloop();
-}
+}*/
