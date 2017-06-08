@@ -1,5 +1,5 @@
 // 1. Create a Pixi renderer and define size and a background color
-var renderer = PIXI.autoDetectRenderer(600, 450, {backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor : 0x1099bb});
 
 // 2. Append canvas element to the body
 document.body.appendChild(renderer.view);
@@ -10,7 +10,7 @@ var stage = new PIXI.Container();
 start();
 
 
-function addLine(){
+function addLine(x0, y0, x1, y1){
   var line = new PIXI.Graphics();
 
 // Define line style (think stroke)
@@ -18,16 +18,16 @@ function addLine(){
   line.lineStyle(10, 0xD5402B, 1);
 
 // Define line position - this aligns the top left corner of our canvas
-  line.position.x = renderer.width / 2;
-  line.position.y = renderer.height / 2;
+  //line.position.x = renderer.width / 2;
+  //line.position.y = renderer.height / 2;
 
 // Define pivot to the center of the element (think transformOrigin)
-  line.pivot.set(0,140);
-  line.rotation = 0.785398; // in radiants - use google to convert degrees to radiants
+  line.pivot.set(0,0);
+  //line.rotation = 0.785398; // in radiants - use google to convert degrees to radiants
 
 // Draw line
-  line.moveTo(5,0);
-  line.lineTo(5, 280);
+  line.moveTo(x0,y0);
+  line.lineTo(x1, y1);
 
   stage.addChild(line);
 }
@@ -98,9 +98,17 @@ function start(){
       var width = 50;
       var height = 100;
       //addLine();
+      var widthWithPadding = width+5;
+      var heightWithPadding = height+5;
       for(var i = 0; i < 20; i++){
         for(var j = 0; j < 20; j++){
-          addComputer(i * width, j * height, width, height);
+          addLine(width / 2 + (i) * (widthWithPadding), height/2 + (j) * (height), width + i * widthWithPadding, height/2 + (j) * (heightWithPadding));
+        }
+      }
+
+      for(var i = 0; i < 20; i++){
+        for(var j = 0; j < 20; j++){
+          addComputer(i * widthWithPadding, j * heightWithPadding, width, height);
         }
       }
 
