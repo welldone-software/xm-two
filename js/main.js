@@ -4,7 +4,13 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 var renderer = new THREE.WebGLRenderer({antialias:true});
-var controls = new THREE.OrbitControls(camera);
+
+var orbitCamera = new THREE.OrbitControls(camera);
+orbitCamera.maxDistance = 40;
+orbitCamera.minDistance = 1;
+camera.position.set(0,0,3);
+camera.lookAt(new THREE.Vector3(0,0,0));
+
 var cloudMesh = null;
 
 //init renderer
@@ -16,11 +22,11 @@ var earthObject = new THREE.Object3D();
 scene.add(earthObject);
 
 var createLights = function(){
-  var light	= new THREE.DirectionalLight( 0xcccccc, 0.6 );
-  light.position.set(100,3,5);
-  scene.add( light )
+  var light	= new THREE.DirectionalLight( 0xaaaaaa, 1.0 );
+  light.position.set(5,3,5);
+  scene.add( light );
 
-  var light	= new THREE.AmbientLight( 0x888888 )
+  var light	= new THREE.AmbientLight( 0xaaaaaa );
   scene.add( light );
 }
 
@@ -68,17 +74,14 @@ var createScene = function(){
 
 createScene();
 
-camera.position.set(0,0,3);
-camera.lookAt(new THREE.Vector3(0,0,0));
-
 function render(){
   requestAnimationFrame(render);
 
   //rotate earth a little
-  earthObject.rotation.y += (0.1*(Math.PI / 180)) % 360;
+  earthObject.rotation.y += (0.05*(Math.PI / 180)) % 360;
   //rotate cloud a little
   if(cloudMesh){
-    cloudMesh.rotation.y += ((0.2*Math.PI / 180)) % 360;
+    cloudMesh.rotation.y += ((0.1*Math.PI / 180)) % 360;
   }
 
   renderer.render(scene, camera);
