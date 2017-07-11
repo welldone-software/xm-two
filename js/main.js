@@ -34,13 +34,40 @@ var createSpace = function(){
 }
 
 var createEarthCloud	= function(){
+
+  /*var geometry = new THREE.SphereGeometry(0.51, 32, 32);
+  var material = new THREE.MeshPhongMaterial({
+    map		: THREE.ImageUtils.loadTexture('images/CanvasDemo.png'),
+    transparent: true,
+    opacity		: 0.3});
+
+  var alphaMap = new THREE.TextureLoader().load('images/CanvasDemo.png');
+  material.alphaMap = alphaMap;
+  material.alphaMap.magFilter = THREE.NearestFilter;
+  material.alphaMap.wrapT = THREE.RepeatWrapping;
+  material.alphaMap.repeat.y = 1;
+  var mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  return mesh;*/
+// execute this code every frame
+
+
   var geometry	= new THREE.SphereGeometry(0.51, 32, 32)
   var material	= new THREE.MeshPhongMaterial({
-    map		: THREE.ImageUtils.loadTexture('images/CanvasDemo.png'),
+    //map		: THREE.ImageUtils.loadTexture('images/CanvasDemo.png'),
     //side		: THREE.DoubleSide,
     transparent	: true,
     opacity		: 0.7,
   })
+
+  var alphaMap = new THREE.TextureLoader().load('images/CanvasDemo.png');
+  material.alphaMap = alphaMap;
+  //material.alphaMap.magFilter = THREE.NearestFilter;
+  material.alphaMap.wrapT = THREE.RepeatWrapping;
+  material.alphaMap.wrapS = THREE.RepeatWrapping;
+  material.alphaMap.repeat.x = 1;
+
   var mesh	= new THREE.Mesh(geometry, material)
   return mesh
 }
@@ -67,7 +94,7 @@ var createScene = function(){
 }
 
 createScene();
-
+var startTime = new Date().getTime();
 camera.position.set(0,0,3);
 camera.lookAt(new THREE.Vector3(0,0,0));
 
@@ -75,10 +102,14 @@ function render(){
   requestAnimationFrame(render);
 
   //rotate earth a little
-  earthObject.rotation.y += (0.1*(Math.PI / 180)) % 360;
+  //earthObject.rotation.y += (0.05*(Math.PI / 180)) % 360;
   //rotate cloud a little
+
   if(cloudMesh){
-    cloudMesh.rotation.y += ((0.2*Math.PI / 180)) % 360;
+    //cloudMesh.rotation.y += ((0.1*Math.PI / 180)) % 360;
+
+    var time = new Date().getTime() - startTime;
+    cloudMesh.material.alphaMap.offset.x = time*0.00015;
   }
 
   renderer.render(scene, camera);
